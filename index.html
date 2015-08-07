@@ -14,6 +14,8 @@
         ga('create', 'UA-3607701-11', 'auto');
         ga('send', 'pageview');
     </script>
+    <script src="https://fb.me/react-0.13.3.min.js"></script>
+    <script src="https://fb.me/JSXTransformer-0.13.3.js"></script>
 <style>
 .content{
     margin: 0;
@@ -33,87 +35,106 @@ img.cc{
 </style>
 </head>
 <body>
-<div class="content">
-    <h1>一起打拼，台灣新生產生器</h1>
-    <a href="https://github.com/qcl/SoongPosterGenerator"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
-    <canvas id="canvas" width="300" height="400"></canvas>
-    <div>
-    </div>
+    <div id="example"></div>
+    <div class="content">
+        <h1>一起打拼，台灣新生產生器</h1>
+        <a href="https://github.com/qcl/SoongPosterGenerator"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
+        <canvas id="canvas" width="300" height="400"></canvas>
+        <div class="photo" style="">
+        </div>
 
-    <h2>想說什麼？</h2>
-    <textarea id="text" placeholder="一起打拼，台灣新生" rows="5" cols="40">不過你們放心
-我會特赦你們</textarea>
-    <button id="preview">預覽</button>
-    <button id="download">下載</button>
-    <div>
+        <h2>想說什麼？</h2>
+        <div id='text-container'></div>
+
+        <button id="download">下載</button>
+        <div>
     </div>
     <img id="soongPoster" style="display:none" src="img/soong-poster.png" />
 <script>
 
 window.onload = function(){
-
-    var textContent = document.getElementById("text");
-    var previewBtn = document.getElementById("preview");
     var downloadBtn = document.getElementById("download");
-    //var masterSelector = document.getElementById("master");
-    var canvas = document.getElementById("canvas");
-    var context = canvas.getContext("2d");
-
-    // image area on canvas [(x0, y0), (x1, y1)]
-    var imgArea = [0, 0, 300, 400];
-    // text area on canvas [(x0, y0), (x1, y1)]
-    var textArea = [0, 300, 300, 400];
-    var lineHeight = 30;
-
-    var drawMaster = function() {
-        context.clearRect.apply(context, imgArea);
-        var img = document.getElementById("soongPoster");
-        context.drawImage.apply(context, [img].concat(imgArea));
-    }
-
-    var drawWords = function() {
-        //context.fillStyle = "#fff";
-        //context.fillRect.apply(context, textArea);
-
-        var textCenter = (textArea[0] + textArea[2])/2;
-
-        if(textContent.value.length>0){
-            var line = textContent.value.split("\n");
-            context.fillStyle = "#fff";
-            context.font = "25pt Times New Roman";
-            context.textAlign = "center";
-            for(var i = 0; i<line.length; i++){
-                context.fillText(line[i], textCenter, textArea[1] + lineHeight*(i+1));
-            }
-
-        }
-
-    }
-
-    var gen = function(){
-        drawMaster();
-        drawWords();
-    };
-
-    previewBtn.onclick = function(){
-        ga("send","event","MasterQuote","Preview",textContent.value);
-        gen();
-    };
 
     downloadBtn.onclick = function(){
         ga("send","event","MasterQuote","Download",textContent.value);
-        gen();
         var dataURL = canvas.toDataURL();
         window.open(dataURL);
     };
 
     // initial
     //drawMaster();
-    gen();
 };
+</script>
 
+<script type="text/jsx">
+    var TextComponent = React.createClass({
+        getInitialState: function () {
+            var canvas = document.getElementById("canvas");
+            this.textArea = [0, 300, 300, 400];
+            this.lineHeight = 30;
+            this.imgArea = [0, 0, 300, 400];
 
+            return {
+                text: '不過你們放心\n   我會特赦你們'
+            };
+        },
 
+        componentDidMount: function () {
+            var canvas = document.getElementById("canvas");
+            var context = canvas.getContext("2d");
+
+            this.drawMaster(context);
+            this.drawWords(context);
+        },
+
+        componentDidUpdate: function () {
+            var canvas = document.getElementById("canvas");
+            var context = canvas.getContext("2d");
+
+            this.drawMaster(context);
+            this.drawWords(context);
+            ga("send","event","MasterQuote","Preview",textContent.value);
+        },
+
+        handleChange: function (e) {
+            this.setState({ text: e.target.value });
+        },
+
+        drawMaster: function(context) {
+            context.clearRect.apply(context, this.imgArea);
+            var img = document.getElementById("soongPoster");
+            context.drawImage.apply(context, [img].concat(this.imgArea));
+        },
+
+        drawWords: function (context) {
+            var textCenter = (this.textArea[0] + this.textArea[2])/2;
+            var textContent = document.getElementById("text");
+            var textContent = this.state.text;
+
+            if(textContent.length>0){
+                var line = textContent.split("\n");
+                context.fillStyle = "#fff";
+                context.font = "25pt Times New Roman";
+                context.textAlign = "center";
+                for(var i = 0; i<line.length; i++){
+                    context.fillText(line[i], textCenter, this.textArea[1] + this.lineHeight*(i+1));
+                }
+
+            }
+        },
+        render: function() {
+            return (
+              <textarea id='text' placeholder='一起打拼，台灣新生' rows='5' cols='40' onChange={this.handleChange}>
+                {this.state.text}
+              </textarea>
+            );
+        }
+    });
+
+    React.render(
+        <TextComponent />,
+        document.getElementById('text-container')
+    );
 </script>
 <hr />
 <p>幕僚透露，當天原本是要拍攝平面照片，宋楚瑜到了攝影棚，才知道有規劃潑泥巴的橋段，一潑就潑了10多分鐘，有2個潑得很賣力。宋楚瑜開玩笑說：「如果是戒嚴時期，我就把你們給斃了，不過你們放心，我會特赦你們。」宋語畢，現場哄堂大笑。</p>
