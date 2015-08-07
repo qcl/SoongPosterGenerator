@@ -32,21 +32,45 @@ img.cc{
     width: 100%;
     text-align: right;
 }
+
+canvas {
+    display: block;
+    margin: 0 auto 20px;
+}
+
+#download, #text {
+    display: block;
+    width: 90%;
+    margin: 0 auto 20px;
+}
+
+#text {
+    height: 80px;
+    font-size: 30px;
+    margin: 0 auto 20px;
+    padding: 0;
+}
+
+#download {
+    height: 40px;
+    background-color: #CAEFFF;
+    border: 0;
+    box-shadow: 0 3px 0px rgba(37, 81, 90, 0.5);
+    font-size: 24px;
+    font-family: 'Arial';
+    color: #5D7D6E;
+    margin: 0 auto 10px;
+}
 </style>
 </head>
 <body>
-    <div id="example"></div>
     <div class="content">
         <h1>一起打拼，台灣新生產生器</h1>
         <a href="https://github.com/qcl/SoongPosterGenerator"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
         <canvas id="canvas" width="300" height="400"></canvas>
-        <div class="photo" style="">
-        </div>
-
-        <h2>想說什麼？</h2>
+        <h2 style="text-align: center;">想說什麼？</h2>
         <div id='text-container'></div>
-
-        <button id="download">下載</button>
+        <button id="download">下載圖片</button>
         <div>
     </div>
     <img id="soongPoster" style="display:none" src="img/soong-poster.png" />
