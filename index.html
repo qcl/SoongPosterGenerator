@@ -80,13 +80,11 @@ window.onload = function(){
     var downloadBtn = document.getElementById("download");
 
     downloadBtn.onclick = function(){
-        ga("send","event","MasterQuote","Download",textContent.value);
+        var textContent = document.getElementById("text").value;
+        ga("send","event","MasterQuote","Download",textContent);
         var dataURL = canvas.toDataURL();
         window.open(dataURL);
     };
-
-    // initial
-    //drawMaster();
 };
 </script>
 
@@ -117,7 +115,6 @@ window.onload = function(){
 
             this.drawMaster(context);
             this.drawWords(context);
-            ga("send","event","MasterQuote","Preview",textContent.value);
         },
 
         handleChange: function (e) {
@@ -132,7 +129,6 @@ window.onload = function(){
 
         drawWords: function (context) {
             var textCenter = (this.textArea[0] + this.textArea[2])/2;
-            var textContent = document.getElementById("text");
             var textContent = this.state.text;
 
             if(textContent.length>0){
@@ -143,7 +139,7 @@ window.onload = function(){
                 for(var i = 0; i<line.length; i++){
                     context.fillText(line[i], textCenter, this.textArea[1] + this.lineHeight*(i+1));
                 }
-
+                ga("send","event","MasterQuote","Preview",textContent);
             }
         },
         render: function() {
